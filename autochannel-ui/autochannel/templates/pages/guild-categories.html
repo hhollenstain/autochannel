@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+Categories for INSERT GUILD ID {{session['user']['username'] }}
+{% endblock %}
+
+{% block app_content %}
+<div class="container-fluid">
+        <div class="row">
+            <h1>
+                Guild Categories
+            </h1>  
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Enabled</th>
+                        <th scope="col">Prefix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for cat in categories %}
+                    <tr>
+                        <th scope="row">{{cat}}</th>
+                        <td>{{categories[cat]['name']}}</td>
+                        <td><input type="checkbox" class='toggle' checked data-toggle="toggle"></td>
+                        <td>AC!</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>
+    $(document).ready(function() {
+        $('.toggle').click(function() {
+            var current_status = $('.status').text();
+            if (current_status === 'Untoggled'){
+                $('.status').html('Toggled');
+            }
+            else{
+                $('.status').html('Untoggled');
+            }
+
+        });
+    });
+</script>
+{% endblock %}
