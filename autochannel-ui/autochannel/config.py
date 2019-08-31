@@ -7,6 +7,7 @@ class Config:
     AVATAR_BASE_URL = "https://cdn.discordapp.com/avatars/"
     DEFAULT_AVATAR = "https://discordapp.com/assets/"\
                 "1cbd08c76f8af6dddce02c5138971129.png"
+    GUILD_ICON_BASE = "https://cdn.discordapp.com/icons/"
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True

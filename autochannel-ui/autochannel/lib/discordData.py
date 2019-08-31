@@ -1,4 +1,5 @@
 import logging
+from flask import current_app as app
 
 LOG = logging.getLogger(__name__)
 
@@ -10,10 +11,16 @@ def parse_managed_guilds(data):
     for guild in data:
         parsed_managed_guilds[guild['name']] = {
             'id': guild['id'],
+            'name': guild['name'],
             'permissions': guild['permissions'],
-            'icon': guild['icon'],
         }
+        if guild['icon']:
+          parsed_managed_guilds[guild['name']]['icon'] = f"{app.config['GUILD_ICON_BASE']}{guild['id']}/{guild['icon']}.jpg"
+        else:
+          parsed_managed_guilds[guild['name']]['icon'] = app.config['DEFAULT_AVATAR']
     return parsed_managed_guilds
+
+#https://cdn.discordapp.com/icons/{{guilds[server]['id']}}/{{guilds[server]['icon']}}.jpg
 
 def parsed_categories(data):
   """

@@ -74,19 +74,26 @@ def dashboard(user_id):
 @mod_site.route('/dashboard/<user_id>/<guild_id>')
 @login_required
 def dashboard_guild(user_id=None, guild_id=None):
+    """[summary]
+    
+    Keyword Arguments:
+        user_id {[type]} -- [description] (default: {None})
+        guild_id {[type]} -- [description] (default: {None})
+    
+    Returns:
+        [type] -- [description]
+    """
     #channels = api_functions.get_guild_channels(guild_id)
     categories = api_functions.get_guild_categories(guild_id)
+    guild = api_functions.get_guild(guild_id)
+    guild_data = discordData.parse_managed_guilds(guild)
+    LOG.info(guild_data)
+    
     if categories:
-        #return jsonify(categories=categories)
-        # for cat in categories:
-        #     LOG.info(categories[cat]['name'])
-        # LOG.info(categories)
-        LOG.info(categories)
-        return render_template('pages/guild-categories.html', categories=categories)
+        return render_template('pages/guild-categories.html', categories=categories, guild=guild_data)
 
     return jsonify(error='BOT Not added to this guild or no')
 
-    
 
 # @app.route('/api/login')
 # def login():
@@ -104,10 +111,20 @@ def dashboard_guild(user_id=None, guild_id=None):
 
 @mod_site.route('/ohno')
 def ohno():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
     return jsonify(error="something went wrong")
 
 @mod_site.route('/callback')
 def callback():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
     if request.values.get('error'):
         return request.values['error']
     discord = make_session(state=session.get('oauth2_state'))
@@ -140,6 +157,11 @@ def callback():
 @mod_site.route('/me')
 @login_required
 def me():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
     discord = api_functions.make_session(token=session.get('oauth2_token'))
     user = discord.get(app.config['API_BASE_URL'] + '/users/@me').json()
     guilds = discord.get(app.config['API_BASE_URL'] + '/users/@me/guilds').json()
@@ -149,12 +171,22 @@ def me():
 @mod_site.route('/whoami')
 @login_required
 def whoami():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
     token = session['oauth2_token']
     return jsonify(user=api_functions.get_user(token))
 
 @mod_site.route('/api/user')
 @login_required
 def user():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
     token = session['oauth2_token']
     #user_info = get_user(token)
     return jsonify(user=api_functions.get_user(token))
@@ -168,6 +200,11 @@ def user():
 @mod_site.route('/managed-guilds')
 @login_required
 def managed_guilds():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
     token = session['oauth2_token']
     user = api_functions.get_user(token)
     guilds = api_functions.get_user_guilds(token)
@@ -176,7 +213,6 @@ def managed_guilds():
         key=lambda s: s['name'].lower()
     )
     guild_data = discordData.parse_managed_guilds(user_servers)
-    #return jsonify(managedGuilds=user_servers)
     return jsonify(managedGuilds=guild_data)
 
 
@@ -185,23 +221,11 @@ def logout():
     session.clear()
     return redirect(url_for('mod_site.index'))
 
+
+
 # @app.route('/', defaults={'path': ''})
 # @app.route('/<path:path>')
 # def catch_all(path):
 #     if app.debug:
 #         return requests.get('http://localhost:8080/{}'.format(path)).text
 #     return render_template("index.html")
-
-def get_guild_channels(server_id, voice=True, text=True):
-    headers = {'Authorization': 'Bot '+app.AC_TOKEN}
-    r = requests.get(API_BASE_URL+'/guilds/{}/channels'.format(server_id),
-                     headers=headers)
-    if r.status_code == 200:
-        channels = r.json()
-        if not voice:
-            channels = list(filter(lambda c: c['type'] != 'voice',
-                                   channels))
-        if not text:
-            channels = list(filter(lambda c: c['type'] != 'text', channels))
-        return channels
-    return None

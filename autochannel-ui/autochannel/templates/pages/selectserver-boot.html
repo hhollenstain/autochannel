@@ -9,13 +9,13 @@ Managed servers for {{session['user']['username'] }}
         <div class="row">
         {% for server in guilds %}
         <div class="row row-centered animated bounceInUp">
-            <div class="col-md-1 col-xs-3 text-center col-centered" style="font-size:13px; color:#FFF;">
+            <div class="text-center col-centered" style="font-size:13px; color:#FFF;">
                 <a href="{{url_for('mod_site.dashboard_guild', user_id=user_id,guild_id=guilds[server]['id'])}}" style="color:#FFF">
                     <img {% if guilds[server]['icon'] %}
-                    src="https://cdn.discordapp.com/icons/{{guilds[server]['id']}}/{{guilds[server]['icon']}}.jpg"{%endif%}
+                    src="{{guilds[server]['icon']}}"{%endif%}
                     {% if not guilds[server]['icon'] %}avatar="{{server}}"
-                    {%endif%}  style="width:100%; border:2px #FFF solid;"
-                    class="img-circle" data-toggle="tooltip" title="{{server}}"
+                    {%endif%}  style="width:128px; border:2px #FFF solid;"
+                    class="img-circle inline-block select-server" data-toggle="tooltip" title="{{server}}"
                     data-placement="bottom" / >
                 </a>
             </div>

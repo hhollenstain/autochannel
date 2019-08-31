@@ -22,6 +22,14 @@ Channel types:
 LOG = logging.getLogger(__name__)
 
 def get_guild_categories(server_id):
+    """[summary]
+    
+    Arguments:
+        server_id {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
     headers = {'Authorization': 'Bot '+app.config['AC_TOKEN']}
     r = requests.get(app.config['API_BASE_URL']+'/guilds/{}/channels'.format(server_id),
                      headers=headers)
@@ -34,6 +42,18 @@ def get_guild_categories(server_id):
     return None
 
 def get_guild_channels(server_id, voice=True, text=True):
+    """[summary]
+    
+    Arguments:
+        server_id {[type]} -- [description]
+    
+    Keyword Arguments:
+        voice {bool} -- [description] (default: {True})
+        text {bool} -- [description] (default: {True})
+    
+    Returns:
+        [type] -- [description]
+    """
     headers = {'Authorization': 'Bot '+app.config['AC_TOKEN']}
     r = requests.get(app.config['API_BASE_URL']+'/guilds/{}/channels'.format(server_id),
                      headers=headers)
@@ -47,7 +67,11 @@ def get_guild_channels(server_id, voice=True, text=True):
     return None
 
 def get_managed_guilds():
-    LOG.info(session)
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
     token = session['oauth2_token']
     user = get_user(token)
     guilds = get_user_guilds(token)
@@ -60,7 +84,30 @@ def get_managed_guilds():
     #return jsonify(managedGuilds=guild_data)
     return guild_data
 
+def get_guild(guild_id):
+    """[summary]
+    
+    Arguments:
+        guild_id {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    token = session['oauth2_token']
+    guilds = get_user_guilds(token)
+    return list(
+        filter( lambda g: (g['id'] in guild_id), guilds)
+    )
+
 def get_user(token):
+    """[summary]
+    
+    Arguments:
+        token {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
     if 'user' in session:
         return session['user']
 
@@ -79,6 +126,14 @@ def get_user(token):
     return user
 
 def get_user_guilds(token):
+    """[summary]
+    
+    Arguments:
+        token {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
     # If it's an api_token, go fetch the discord_token
     if token.get('api_key'):
         user_id = token['user_id']
@@ -95,6 +150,15 @@ def get_user_guilds(token):
     return guilds
 
 def get_user_managed_servers(user, guilds):
+    """[summary]
+    
+    Arguments:
+        user {[type]} -- [description]
+        guilds {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
     return list(
         filter(
             lambda g: (g['owner'] is True) or
@@ -103,6 +167,16 @@ def get_user_managed_servers(user, guilds):
     )
 
 def make_session(token=None, state=None, scope=None):
+    """[summary]
+    
+    Keyword Arguments:
+        token {[type]} -- [description] (default: {None})
+        state {[type]} -- [description] (default: {None})
+        scope {[type]} -- [description] (default: {None})
+    
+    Returns:
+        [type] -- [description]
+    """
     return OAuth2Session(
         client_id=app.config['OAUTH2_CLIENT_ID'],
         token=token,
@@ -117,4 +191,9 @@ def make_session(token=None, state=None, scope=None):
         token_updater=token_updater)
 
 def token_updater(token):
+    """[summary]
+    
+    Arguments:
+        token {[type]} -- [description]
+    """
     session['oauth2_token'] = token

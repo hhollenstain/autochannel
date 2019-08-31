@@ -64,5 +64,6 @@ def callback():
     }
     session.permanent = True
     session['api_token'] = api_token
+    session['guilds'] = api_functions.get_managed_guilds()
     #return redirect(url_for('.me'))
     return redirect(url_for('mod_site.dashboard', user_id=session['api_token']['user_id']))
