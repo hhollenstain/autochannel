@@ -116,11 +116,11 @@ span {
     display: none;
 }
 
-#sidebar.active .guild-list {
+#sidebar.active .expanded-text {
     display: none;
 }
 
-#sidebar .guild-list {
+#sidebar .expanded-text {
     display: inline;
 }
 
@@ -170,7 +170,7 @@ span {
 
 #sidebar ul.components {
     padding: 20px 0;
-    border-bottom: 1px solid #47748b;
+    /* border-bottom: 0px solid #47748b; */
 }
 
 #sidebar ul li a {
@@ -235,6 +235,15 @@ a.article:hover {
     color: #fff !important;
 }
 
+.select-server-hover:hover{
+    background: #6d7fcc !important;
+    color: #fff !important;    
+}
+
+a.select-server-hover:hover{
+    background: transparent !important;
+    color: #fff !important;    
+}
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
@@ -350,4 +359,14 @@ Content switch to another css
 
 .float-right {
     float: right;
+}
+
+.discord-dark-col thead th {
+    border-bottom: 2px solid #6d7fcc
+}
+
+.discord-dark-col td, .discord-dark-col th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #6d7fcc;
 }

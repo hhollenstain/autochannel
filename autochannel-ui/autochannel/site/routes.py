@@ -7,7 +7,9 @@ from flask import current_app as app
 from flask_bootstrap import Bootstrap
 from requests_oauthlib import OAuth2Session
 from itsdangerous import JSONWebSignatureSerializer
-from autochannel.lib.decorators import login_required
+from autochannel import db
+from autochannel.models import Guild, Category
+from autochannel.lib.decorators import login_required, guild_check
 from autochannel.lib import discordData
 from autochannel.api import api_functions
 
@@ -15,9 +17,9 @@ LOG = logging.getLogger(__name__)
 
 mod_site = Blueprint('mod_site', __name__)
 
-@mod_site.route('/homepage')
-def homepage():
-    return 'homepageW'
+@mod_site.route('/')
+def index():
+    return render_template('pages/index.html')
 
 @mod_site.route('/avatar-test')
 def avatar_test():
@@ -51,12 +53,34 @@ def token_updater(token):
 
 @login_required
 @mod_site.route('/dashboard')
-def index():
-    #LOG.info("dashboard lOGOSDFDSFSFSF")
+def dashboard_index():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
     if 'oauth2_token' in session:
         return redirect(url_for('mod_site.dashboard', user_id=session['api_token']['user_id']))
     
     return redirect(url_for('mod_api.login')) 
+
+@login_required
+@mod_site.route('/dashboard/add-guild')
+def add_guild():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
+    guild_id = request.args.get('guild_id')
+    categories = api_functions.get_guild_categories(guild_id)
+    guild = api_functions.get_guild(guild_id)
+    guild_data = discordData.parse_managed_guilds(guild)
+    guild_id_add = Guild(id=guild_id)
+    db.session.add(guild_id_add)
+    db.session.commit()
+    LOG.info(f'GUILD ID: {guild_id}')
+    return "worked?"
 
 
 @mod_site.route('/dashboard/<user_id>')
@@ -73,6 +97,7 @@ def dashboard(user_id):
 
 @mod_site.route('/dashboard/<user_id>/<guild_id>')
 @login_required
+@guild_check
 def dashboard_guild(user_id=None, guild_id=None):
     """[summary]
     
@@ -87,7 +112,6 @@ def dashboard_guild(user_id=None, guild_id=None):
     categories = api_functions.get_guild_categories(guild_id)
     guild = api_functions.get_guild(guild_id)
     guild_data = discordData.parse_managed_guilds(guild)
-    LOG.info(guild_data)
     
     if categories:
         return render_template('pages/guild-categories.html', categories=categories, guild=guild_data)
@@ -116,7 +140,8 @@ def ohno():
     Returns:
         [type] -- [description]
     """
-    return jsonify(error="something went wrong")
+    #return jsonify(error="something went wrong")
+    return render_template('pages/ohno.html')
 
 @mod_site.route('/callback')
 def callback():
@@ -215,9 +240,32 @@ def managed_guilds():
     guild_data = discordData.parse_managed_guilds(user_servers)
     return jsonify(managedGuilds=guild_data)
 
+@mod_site.route('/login')
+def login():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
+    # scope = request.args.get(
+    #     'scope',
+    #     'identify email connections guilds guilds.join')
+    scope = ['identify', 'email', 'guilds', 'connections', 'guilds.join']
+    discord = api_functions.make_session(scope=scope)
+    authorization_url, state = discord.authorization_url(
+        app.config['AUTHORIZATION_BASE_URL'],
+        # access_type="offline"
+    )
+    session['oauth2_state'] = state
+    return redirect(authorization_url) 
 
 @mod_site.route('/logout')
 def logout():
+    """[summary]
+
+    Returns:
+        [type] -- [description]
+    """
     session.clear()
     return redirect(url_for('mod_site.index'))
 

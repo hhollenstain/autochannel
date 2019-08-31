@@ -8,7 +8,7 @@
         </div> -->
 {% if title %}{{ title }} - AutoChannel{% else %}AutoChannel Bot{% endif %}
         <div class="navbar-nav ml-auto">
-{% if session['user']['username'] is defined %}
+<!-- {% if session['user'] is defined %}
             <div class="dropdown">
                 <button type="button" class="btn btn-primary" data-toggle="dropdown">
                    {{session['user']['username']}}
@@ -20,7 +20,7 @@
             </div>
 {% else %}
             <a href="/login" class="nav-item nav-link"> Login </a>
-{% endif %}
+{% endif %} -->
         </div>
     </div>
 </nav>

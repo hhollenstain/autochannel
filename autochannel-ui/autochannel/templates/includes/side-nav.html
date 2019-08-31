@@ -14,34 +14,48 @@
                 <h3>AutoChannel</h3>
                 <strong>AC</strong>
             </div>
-    
+ 
+            
+{% if session['user'] is defined %}
+            <!-- <div class="dropdown">
+                <button type="button" class="btn btn-primary" data-toggle="dropdown">
+                   {{session['user']['username']}}
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/dashboard">Servers</a>
+                    <a class="dropdown-item" href="/logout">Logout</a>
+                </div>
+            </div> -->
+
             <ul class="list-unstyled components">
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                        <i class="fas fa-home"></i>
-                        Home
+                        <i class="fas fa-user"></i>
+                        <h6 class="expanded-text">{{session['user']['username']}}</h6>
                     </a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
-                            <a href="#">Home 1</a>
+                            <a href="/dashboard">Severs</a>
                         </li>
                         <li>
-                            <a href="#">Home 2</a>
+                            <a href="/logout">Logout</a>
                         </li>
-                        <li>
-                            <a href="#">Home 3</a>
-                        </li>
+{% else %}
+                        <a href="/login" class="nav-item nav-link"> 
+                            <i class="fas fa-user"></i>
+                            <h6 class="expanded-text">Login</h6>
+                        </a>
+{% endif %}
                     </ul>
                 </li>
 {% if session['guilds'] is defined %}
 {% for guild in session['guilds'] %}
-                <li>
-                    <a
-                    href="/dashboard/{{session['api_token']['user_id']}}/{{session['guilds'][guild]['id']}}">
+                <li style="" class="select-server-hover animated bounceInUp">
+                    <a class="select-server-hover" style="display: inline" href="/dashboard/{{session['api_token']['user_id']}}/{{session['guilds'][guild]['id']}}">
                         <img style="display:inline" width="32px" class="img-circle"
                         src="{{session['guilds'][guild]['icon']}}" /> 
-                        <h6 class="guild-list">{{session['guilds'][guild]['name']}}</h6>
                     </a>
+                        <h6 class="expanded-text">{{session['guilds'][guild]['name']}}</h6>
                 </li>
 {% endfor %}
 {% endif %}

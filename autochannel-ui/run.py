@@ -1,6 +1,7 @@
 import os
 import logging
 import coloredlogs
+from waitress import serve
 from autochannel.lib import utils
 from autochannel import create_app
 
@@ -26,6 +27,7 @@ def main():
     if 'http://' in app.config['OAUTH2_REDIRECT_URI']:
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
     app.run()
+    #serve(app, listen='0.0.0.0:5000')
 
 # if __name__ == "__main__":
 #     main()

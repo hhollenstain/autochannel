@@ -13,6 +13,7 @@ INSTALL_REQUIREMENTS = [
     'pyyaml',
     'requests',
     'requests_oauthlib',
+    'waitress',
 ]
 
 TEST_REQUIREMENTS = {
