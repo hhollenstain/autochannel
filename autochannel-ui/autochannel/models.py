@@ -3,10 +3,16 @@ from autochannel import db
 class Guild(db.Model):
     __tablename__ = 'guild'
     id = db.Column(db.Integer, primary_key=True)
-    categories = db.relationship('Category', backref='guild', lazy=True)
+    #categories = db.relationship('Category', backref='categories', lazy=True)
+        
 
-    def __repr__(self):
-        return f'Guild({self.id})'
+    # def __init__(self, guild_id, categories,):
+    #         self.id = guild_id
+    #         self.categories = categories
+        
+
+    # def __repr__(self):
+    #     return f'Guild({self.id})'
     
     def get_categories(self):
         cats = {}
@@ -22,14 +28,16 @@ class Guild(db.Model):
 class Category(db.Model):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
-    guild_id = db.Column(db.Integer, db.ForeignKey('guild.id'))
+    guild_id = db.Column(db.Integer, db.ForeignKey('guild.id'), nullable=False)
     name = db.Column(db.String(40), unique=False, nullable=False)
     enabled = db.Column(db.Boolean, default=False, nullable=False)
     prefix = db.Column(db.String(10), unique=False, nullable=False, default='AC!')
+    guild = db.relationship('Guild', backref='categories', lazy=True)
+    #guild  =  db.relationship(Guild, backref='categories', lazy=True)
     
-    def get_data(self):
-        return jsonify(id=self.id, enabled=self.enabled, prefix=self.prefix)
+    # def get_data(self):
+    #     return jsonify(id=self.id, enabled=self.enabled, prefix=self.prefix)
 
     
-    def __repr__(self):
-        return f'category({self.id} {self.guild_id} {self.name} {self.enabled} {self.prefix})'
+    # def __repr__(self):
+    #     return f'category({self.id} {self.guild_id} {self.name} {self.enabled} {self.prefix})'

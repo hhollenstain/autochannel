@@ -4,6 +4,7 @@ init - version info
 import logging
 from flask import abort, redirect, request, session 
 from functools import wraps
+from autochannel import db
 from autochannel.site import site_functions
 from autochannel.models import Guild, Category
 
@@ -34,7 +35,9 @@ def guild_check(f):
           either the function or redirect to add bot to the discord server
       """
       guild_id = kwargs.get('guild_id')
-      guild_exists = Guild.query.filter_by(id = guild_id).first()
+      #guild_exists = Guild.query.filter_by(id = guild_id).first()
+
+      guild_exists = db.session.query(Guild).get(guild_id)
       if not guild_exists:
         invite_url = site_functions.get_invite_link(guild_id)
         return redirect(invite_url)

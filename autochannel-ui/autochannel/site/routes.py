@@ -12,6 +12,8 @@ from autochannel.models import Guild, Category
 from autochannel.lib.decorators import login_required, guild_check
 from autochannel.lib import discordData
 from autochannel.api import api_functions
+from autochannel.data import data_functions, data_forms
+
 
 LOG = logging.getLogger(__name__)
 
@@ -95,6 +97,25 @@ def dashboard(user_id):
 #                             user_id=user_id))
     return render_template('pages/selectserver-boot.html', guilds=guilds, user_id=user_id)
 
+@mod_site.route('/dashboard/<user_id>/<guild_id>/form', methods=['GET', 'POST'])
+@login_required
+@guild_check
+def dashboard_guild_form(user_id=None, guild_id=None):
+    guild = Guild.query.get_or_404(guild_id)
+    cat = Category.query.filter_by(guild_id=guild_id).all()
+    LOG.info(cat)
+    LOG.info(guild)
+
+    return render_template('pages/guild-form.html', user_id=user_id, guild_id=guild_id)
+
+@mod_site.route('/dashboard/<user_id>/<guild_id>/db')
+@login_required
+@guild_check
+def dashboard_guild_db(user_id=None, guild_id=None):
+    guild = Guild.query.filter_by(id = guild_id).first()
+    guild_data = guild.get_categories()
+    return render_template('pages/guild-db.html', guild=guild_data)
+
 @mod_site.route('/dashboard/<user_id>/<guild_id>')
 @login_required
 @guild_check
@@ -110,6 +131,7 @@ def dashboard_guild(user_id=None, guild_id=None):
     """
     #channels = api_functions.get_guild_channels(guild_id)
     categories = api_functions.get_guild_categories(guild_id)
+    data_functions.data_update_guild_categories(categories=categories, guild_id=guild_id)
     guild = api_functions.get_guild(guild_id)
     guild_data = discordData.parse_managed_guilds(guild)
     

@@ -357,6 +357,11 @@ Content switch to another css
     border-color: #6d7fcc;
 }
 
+.toggle-off.btn {
+    padding-left: 24px;
+    color: #6d7fcc;
+}
+
 .float-right {
     float: right;
 }

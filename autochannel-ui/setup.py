@@ -6,6 +6,7 @@ from setuptools import setup, find_packages
 INSTALL_REQUIREMENTS = [
     'coloredlogs',
     'Flask',
+    'Flask-WTF',
     'flask_bcrypt',
     'flask_bootstrap',
     'flask_sqlalchemy',
@@ -14,6 +15,8 @@ INSTALL_REQUIREMENTS = [
     'requests',
     'requests_oauthlib',
     'waitress',
+    'wtforms',
+    'WTForms-Alchemy',
 ]
 
 TEST_REQUIREMENTS = {
