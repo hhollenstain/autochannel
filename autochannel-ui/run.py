@@ -3,7 +3,7 @@ import logging
 import coloredlogs
 from waitress import serve
 from autochannel.lib import utils
-from autochannel import create_app
+from autochannel import AcApp
 
 LOG = logging.getLogger(__name__)
 
@@ -22,12 +22,18 @@ def main():
     logging.getLogger(__package__).setLevel(l_level)
     logging.getLogger('websockets.protocol').setLevel(l_level)
     logging.getLogger('urllib3').setLevel(l_level)
-    app = create_app()
+    app_init = AcApp()
+    app = app_init.create_app()
+    @app.teardown_appcontext
+    def cleanup(resp_or_exc):
+        Session.remove()
 
     if 'http://' in app.config['OAUTH2_REDIRECT_URI']:
         os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
     app.run()
     #serve(app, listen='0.0.0.0:5000')
+
+
 
 # if __name__ == "__main__":
 #     main()

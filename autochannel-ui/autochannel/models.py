@@ -1,43 +1,35 @@
-from autochannel import db
+from sqlalchemy import Integer, ForeignKey, String, Column, Boolean
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+from autochannel.database import Base
 
-class Guild(db.Model):
+class Guild(Base):
     __tablename__ = 'guild'
-    id = db.Column(db.Integer, primary_key=True)
-    #categories = db.relationship('Category', backref='categories', lazy=True)
-        
+    id = Column(Integer, primary_key=True)
+    categories = relationship('Category', backref='categories', lazy=True)
 
-    # def __init__(self, guild_id, categories,):
-    #         self.id = guild_id
-    #         self.categories = categories
-        
-
-    # def __repr__(self):
-    #     return f'Guild({self.id})'
+    def __repr__(self):
+        return f'Guild({self.id})'
     
     def get_categories(self):
         cats = {}
 
         for category in self.categories:
             cats[category.id] = {}
-            cats[category.id]['name'] = category.name
             cats[category.id]['prefix'] = category.prefix
             cats[category.id]['enabled'] = category.enabled
         
         return cats
 
-class Category(db.Model):
+class Category(Base):
     __tablename__ = 'category'
-    id = db.Column(db.Integer, primary_key=True)
-    guild_id = db.Column(db.Integer, db.ForeignKey('guild.id'), nullable=False)
-    name = db.Column(db.String(40), unique=False, nullable=False)
-    enabled = db.Column(db.Boolean, default=False, nullable=False)
-    prefix = db.Column(db.String(10), unique=False, nullable=False, default='AC!')
-    guild = db.relationship('Guild', backref='categories', lazy=True)
-    #guild  =  db.relationship(Guild, backref='categories', lazy=True)
+    id = Column(Integer, primary_key=True)
+    guild_id = Column(Integer, ForeignKey('guild.id'), nullable=False)
+    enabled = Column(Boolean, default=False, nullable=False)
+    prefix = Column(String(10), unique=False, nullable=False, default='AC!')
     
-    # def get_data(self):
-    #     return jsonify(id=self.id, enabled=self.enabled, prefix=self.prefix)
+    def get_data(self):
+        return jsonify(id=self.id, enabled=self.enabled, prefix=self.prefix)
 
-    
-    # def __repr__(self):
-    #     return f'category({self.id} {self.guild_id} {self.name} {self.enabled} {self.prefix})'
+    def __repr__(self):
+        return f'category({self.id} {self.guild_id} {self.name} {self.enabled} {self.prefix})'

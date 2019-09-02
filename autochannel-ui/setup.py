@@ -14,6 +14,7 @@ INSTALL_REQUIREMENTS = [
     'pyyaml',
     'requests',
     'requests_oauthlib',
+    'sqlalchemy',
     'waitress',
     'wtforms',
     'WTForms-Alchemy',

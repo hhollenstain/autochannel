@@ -7,12 +7,12 @@ from flask import current_app as app
 from flask_bootstrap import Bootstrap
 from requests_oauthlib import OAuth2Session
 from itsdangerous import JSONWebSignatureSerializer
-from autochannel import db
+#from autochannel import db
 from autochannel.models import Guild, Category
 from autochannel.lib.decorators import login_required, guild_check
 from autochannel.lib import discordData
 from autochannel.api import api_functions
-from autochannel.data import data_functions, data_forms
+from autochannel.data import data_functions, data_forms, data_forms_2
 
 
 LOG = logging.getLogger(__name__)
@@ -79,8 +79,8 @@ def add_guild():
     guild = api_functions.get_guild(guild_id)
     guild_data = discordData.parse_managed_guilds(guild)
     guild_id_add = Guild(id=guild_id)
-    db.session.add(guild_id_add)
-    db.session.commit()
+    app.db.add(guild_id_add)
+    app.db.commit()
     LOG.info(f'GUILD ID: {guild_id}')
     return "worked?"
 
@@ -103,10 +103,12 @@ def dashboard(user_id):
 def dashboard_guild_form(user_id=None, guild_id=None):
     guild = Guild.query.get_or_404(guild_id)
     cat = Category.query.filter_by(guild_id=guild_id).all()
-    LOG.info(cat)
-    LOG.info(guild)
+    form = data_forms_2.GuildForm(request.form, guild)
+    LOG.info(dir(form))
+    # LOG.info(cat)
+    # LOG.info(guild)
 
-    return render_template('pages/guild-form.html', user_id=user_id, guild_id=guild_id)
+    return render_template('pages/guild-form.html', form=form, user_id=user_id, guild_id=guild_id)
 
 @mod_site.route('/dashboard/<user_id>/<guild_id>/db')
 @login_required

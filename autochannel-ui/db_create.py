@@ -1,10 +1,17 @@
-from autochannel import create_app, db
+# from autochannel import create_app, db
 
-app = create_app()
-app.app_context().push()
+# app = create_app()
+# app.app_context().push()
 
-db.init_app(app)
-db.create_all()
+# db.init_app(app)
+# db.create_all()
+
+from autochannel import AcApp
+
+app_init = AcApp()
+app = app_init.create_app()
+
+app_init.create_database()
 
 
 # from autochannel.models import Guild, Category

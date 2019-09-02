@@ -5,5 +5,8 @@ oh no
 {% endblock %}
 
 {% block app_content %}
+{% from "helpers/_formhelpers.html" import render_field %}
+{% from "helpers/_formhelpers.html" import render_form %}
 
+{{render_form(form)}}
 {% endblock %}
