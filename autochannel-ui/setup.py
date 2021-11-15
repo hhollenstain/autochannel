@@ -9,7 +9,7 @@ INSTALL_REQUIREMENTS = [
     'flask_bcrypt',
     'flask_bootstrap',
     'flask_sqlalchemy',
-    'pip==18.0',
+    'pip==21.1',
     'pyyaml',
     'requests',
     'requests_oauthlib',
